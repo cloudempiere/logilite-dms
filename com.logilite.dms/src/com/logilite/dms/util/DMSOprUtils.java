@@ -143,6 +143,8 @@ public class DMSOprUtils
 	 */
 	public static void deleteContentWithPhysicalDocument(DMS dms, MDMSContent content) throws IOException
 	{
+		String trxName = content.get_TrxName();
+		
 		for (MDMSVersion version : content.getAllVersions())
 		{
 			File document = dms.getFileFromStorage(version);
@@ -155,13 +157,13 @@ public class DMSOprUtils
 				FileUtils.deleteDirectory(thumbnails);
 		}
 
-		int no = DB.executeUpdate("DELETE FROM DMS_Association 	WHERE DMS_Content_ID = ?", content.getDMS_Content_ID(), null);
+		int no = DB.executeUpdate("DELETE FROM DMS_Association 	WHERE DMS_Content_ID = ?", content.getDMS_Content_ID(), trxName);
 		DMS.log.log(Level.INFO, no + " association deleted.");
 
-		no = DB.executeUpdate("DELETE FROM DMS_Version			WHERE DMS_Content_ID = ?", content.getDMS_Content_ID(), null);
+		no = DB.executeUpdate("DELETE FROM DMS_Version			WHERE DMS_Content_ID = ?", content.getDMS_Content_ID(), trxName);
 		DMS.log.log(Level.INFO, no + " version deleted.");
 
-		no = DB.executeUpdate("DELETE FROM DMS_Content 			WHERE DMS_Content_ID = ?", content.getDMS_Content_ID(), null);
+		no = DB.executeUpdate("DELETE FROM DMS_Content 			WHERE DMS_Content_ID = ?", content.getDMS_Content_ID(), trxName);
 		DMS.log.log(Level.INFO, no + " content deleted.");
 
 		// TODO Need code for remove linkable docs
